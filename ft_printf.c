@@ -6,7 +6,7 @@
 /*   By: fdiaz <fdiaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 13:01:09 by fdiaz             #+#    #+#             */
-/*   Updated: 2023/03/20 15:21:18 by fdiaz            ###   ########.fr       */
+/*   Updated: 2023/03/24 19:13:30 by fdiaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	ft_parse(const char c, va_list args)
 	else if (c == 'p')
 		return (ft_putpointer(va_arg(args, unsigned long)));
 	else if (c == 'i' || c == 'd')
-		return (ft_putnumber(va_arg(args, int)));
+		return (ft_putnbr(va_arg(args, int)));
 	else if (c == 'u')
 		return (ft_putunsig(va_arg(args, unsigned int)));
 	else if (c == 'x')
@@ -33,29 +33,24 @@ int	ft_parse(const char c, va_list args)
 	return (0);
 }
 
-int	ft_printf(char const *formatted, ...)
+int	ft_printf(const char *format, ...)
 {
-	va_list	args;
-	int		i;
-	int		length;
+	va_list	ap;
+	int		len;
 
-	i = 0;
-	length = 0;
-	va_start(args, formatted);
-	while (formatted[i])
+	va_start(ap, format);
+	len = 0;
+	while (*format)
 	{
-		if (formatted[i] == '%')
+		if (*format == '%')
 		{
-			i++;
-			length += ft_convert(args, formatted[i]);
+			format++;
+			len += ft_parse(*format, ap);
 		}
 		else
-		{	
-			length++;
-			write(1, &formatted[i], 1);
-		}
-		i++;
+			len += ft_putchar(*format);
+		format++;
 	}
-	va_end(args);
-	return (length);
+	va_end(ap);
+	return (len);
 }
